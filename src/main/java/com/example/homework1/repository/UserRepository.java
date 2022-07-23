@@ -1,6 +1,7 @@
 package com.example.homework1.repository;
 
 import com.example.homework1.authorities.Authorities;
+import com.example.homework1.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
@@ -11,21 +12,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class UserRepository {
 
-    private final Map<String, List<Authorities>> map = new ConcurrentHashMap<>();
+    private final Map<User, List<Authorities>> map = new ConcurrentHashMap<>();
 
     public UserRepository() {
-        addUserAuthorities("admin", "admin", Arrays.asList(Authorities.READ, Authorities.WRITE, Authorities.DELETE));
+        addUserAuthorities(new User("admin", "admin"), Arrays.asList(Authorities.READ, Authorities.WRITE, Authorities.DELETE));
     }
 
-    public List<Authorities> getUserAuthorities(String user, String password) {
-        return map.get(userAndPasswordFormat(user, password));
+    public List<Authorities> getUserAuthorities(User user) {
+        return map.get(user);
     }
 
-    public void addUserAuthorities(String user, String password, List<Authorities> list) {
-        map.put(userAndPasswordFormat(user, password), list);
-    }
-
-    private String userAndPasswordFormat(String user, String password) {
-        return String.format("%s %s", user, password);
+    public void addUserAuthorities(User user, List<Authorities> list) {
+        map.put(user, list);
     }
 }
